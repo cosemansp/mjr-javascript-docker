@@ -1,0 +1,16 @@
+{
+    "controls": false,
+    "progress": true,
+    "center": true,
+    "history": true,
+    "slideNumber": true,
+    "width": 1224,
+    "height": 1000,
+    "margin": 0.1,
+    "minScale": 0.5,
+    "maxScale": 1.0,
+    "transition": "zoom",
+    "transition-speed": "slow",
+    "verticalSeparator": "==="
+
+}

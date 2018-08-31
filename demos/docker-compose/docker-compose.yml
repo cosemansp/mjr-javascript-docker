@@ -1,0 +1,25 @@
+version: '2'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+    - "8080:80"
+    depends_on:
+    - node1
+    - node2
+  node1:
+    build: .
+    depends_on:
+    - mongo
+    environment:
+      MONGO_URL: mongodb://mongo/todoDemo
+  node2:
+    build: .
+    depends_on:
+    - mongo
+    environment:
+      MONGO_URL: mongodb://mongo/todoDemo
+  mongo:
+    image: mongo:3.2
+    volumes:
+    - ./.mongo-data:/data/db

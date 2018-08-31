@@ -1,0 +1,5 @@
+{
+  "name": "now-docker",
+  "alias": ["now-docker"],
+  "type": "docker"
+}

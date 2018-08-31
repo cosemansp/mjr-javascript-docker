@@ -58,9 +58,17 @@ Copyright (c) 2018 Euricom nv. Licensed under the [MIT license](https://opensour
 
 ---
 
-# Run mongoDB from docker
+# Setup docker for MacOS
 
-Create local folder (and set access rights)
+Follow this link: [https://docs.docker.com/docker-for-mac/install](https://docs.docker.com/docker-for-mac/install)
+
+Docker is started automatically.
+
+<img src="./images/docker-macos.png">
+
+***
+
+## File sharing
 
 ```
 sudo mkdir -p /data/docker
@@ -70,7 +78,15 @@ sudo chown $USER /data/docker
 Add File Sharing (for MacOS)
 
 <img src="images/docker-file-sharing.png">
-<br><br>
+
+---
+
+# Use docker to run services
+> Extend your development toolbox
+
+***
+
+## Run mongoDB from docker
 
 Create container & run
 
@@ -101,11 +117,11 @@ docker start mongodb
 ---
 
 # Dockerizing a Node.js app
-> You first docker image
+> You app in docker
 
 ***
 
-## A mini http application
+## A mini application
 
 ```js
 const http = require('http');
@@ -117,7 +133,7 @@ http.createServer((req, res) => {
 }).listen(8080);
 ```
 
-## Dockerizing the Node.js Applications
+## Dockerizing Node.js
 
 Dockerfile
 
@@ -174,7 +190,7 @@ A more real live application with Express
 
 ***
 
-## Dockerize the application
+## Dockerize the NodeJS application
 
 ```docker
 # Dockerfile
@@ -222,7 +238,7 @@ Only include files you really want with `.dockerignore`
 
 ---
 
-# Optimize
+# Tips
 
 ***
 

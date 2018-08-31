@@ -1,5 +1,5 @@
-# mjr-frondend-docker
+# mjr-javascript-docker
 
-## W.I.P
+Slides and demo's for running NodeJS application in docker
 
-- https://hackernoon.com/using-yarn-with-docker-c116ad289d56
+- [Slides](./slides.md)

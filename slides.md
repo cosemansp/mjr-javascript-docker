@@ -12,6 +12,10 @@ verticalSeparator: "^\\*\\*\\*"
 <br>
 <br>
 <small>
+v1.0
+</small>
+<br>
+<small>
 Copyright (c) 2018 Euricom nv. Licensed under the [MIT license](https://opensource.org/licenses/MIT).
 </small>
 
@@ -376,20 +380,18 @@ Stop container
 docker stop grace
 ```
 
-> BAD: We don't see any signal handling!
+---> BAD: We don't see any signal handling <---
 
 Lets look at the process tree.
 
-```bash
+```
 $ docker exec -it grace /bin/sh
 > ps falx
-F   UID   PID  PPID COMMAND
-4     0    24     0  /bin/sh
-0     0    39    24   \_ ps falx
-4     0     1     0  npm
-4     0    17     1  sh -c node ./src/server.js
-4     0    18    17  \_ node ./src/server.js
 ```
+
+<img src="./images/process-tree.png" width="1000px"/>
+
+***
 
 ## Gracefull Docker Shutdown
 
@@ -509,8 +511,8 @@ $ docker exec -it <container-id> pm2 monit
 
 ***
 
-# Load Balancing with NGINX
-## Multiple docker images
+## Load Balancing with NGINX
+### Multiple docker images
 
 Let's configure an instance of NGINX to load balance requests between different docker instances.
 
@@ -604,20 +606,21 @@ $ docker-compose up
 
 ***
 
-# Best practices for writing Dockerfiles
+## Best practices for writing Dockerfiles
 
 - Use a .dockerignore file
+
 - Use multi-stage builds
-    - Install tools you need to build your application
-    - Install or update library dependencies
-    - Generate your application
+
 - Avoid installing unnecessary packages
+
 - Each container should have only one concern (one process per container)
+
 - Minimize the number of layers
 
 ***
 
-# Usefull Docker Commands
+## Usefull Docker Commands
 
 ```bash
 # Docker build
@@ -656,17 +659,26 @@ docker exec -it <container-id> /bin/bash
 # Resources
 
 - [Using Yarn with Docker](https://hackernoon.com/using-yarn-with-docker-c116ad289d56)
+
 - [Why we switched from docker to serverless](https://serverless.com/blog/why-we-switched-from-docker-to-serverless/)
+
 - [Load Balancing Node.js Applications with NGINX and Docker](https://auth0.com/blog/load-balancing-nodejs-applications-with-nginx-and-docker/)
+
 - [Best practices for writing Dockerfiles](
 https://docs.docker.com/v17.09/engine/userguide/eng-image/dockerfile_best-practices)
 
 - [Using PM2 with Docker](https://pm2.io/doc/en/runtime/integration/docker/?utm_source=pm2&utm_medium=website&utm_campaign=rebranding)
 
+***
+
+# Resources
+
 - [Building Graceful Node Applications in Docker](https://medium.com/@becintec/building-graceful-node-applications-in-docker-4d2cd4d5d392)
 
-- [https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2](https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2)
+- [How To Prevent Your Node JS Process From Crashing](https://medium.com/dailyjs/how-to-prevent-your-node-js-process-from-crashing-5d40247b8ab2)
+
 - [How to write faster, leaner Dockerfiles for Node with Yarn and Alpine](https://medium.com/@iamnayr/a-multi-part-analysis-of-node-docker-image-sizes-using-yarn-vs-traditional-npm-2c20f034c08f)
+
 - [https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86](https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86)
 
 

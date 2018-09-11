@@ -12,6 +12,6 @@ RUN npm install --production --quiet
 COPY . /app
 
 # Start app
-CMD [ "node", "src/server.js" ]
+CMD [ "npm", "start" ]
 
 EXPOSE 8080

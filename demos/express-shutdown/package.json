@@ -1,18 +1,21 @@
 {
-  "name": "node-express",
-  "version": "1.0.1",
-  "description": "Express Demo",
+  "name": "node-express-shutdown",
+  "version": "1.0.2",
+  "description": "Express Shutdown Demo",
+  "repository": "npm/npm",
   "scripts": {
     "start": "node ./src/server.js",
     "start:debug": "nodemon ./src/server.js",
     "lint": "eslint \"**/*.js\"",
-    "docker:build": "docker build -t node-express .",
-    "docker:run": "docker run -p 8081:8080 -d node-express"
+    "docker:build": "docker build -t node-express-shutdown .",
+    "docker:run": "docker run -p 8080:80 --name=expressShutdown --rm -d node-express-shutdown",
+    "docker:inspect": "docker inspect --format='{{json .State.Health}}' expressShutdown"
   },
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "express": "^4.16.3"
+    "express": "^4.16.3",
+    "morgan": "^1.9.1"
   },
   "devDependencies": {
     "eslint": "^4.19.1",

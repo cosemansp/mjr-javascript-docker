@@ -4,7 +4,7 @@ transition: 'fade'
 verticalSeparator: "^\\*\\*\\*"
 ---
 
-# Docker for JavaScript Developers
+# Docker for JS Developers
 
 #### Use the power of docker to your advantage
 
@@ -33,36 +33,37 @@ Copyright (c) 2018 Euricom nv. Licensed under the [MIT license](https://opensour
     line-height: 0;
 }
 
-
 .reveal h1 {
-    font-size: 3.0em;
+font-size: 3.0em;
 }
 
 .reveal h2 {
-    font-size: 2.00em;
+font-size: 2.00em;
 }
 .reveal h3 {
-    font-size: 1.50em;
+font-size: 1.50em;
 }
 .reveal p {
-    font-size: 70%;
+font-size: 70%;
 }
 .reveal blockquote {
-    font-size: 100%;
+font-size: 100%;
 }
 .reveal pre code {
-    display: block;
-    padding: 5px;
-    overflow: auto;
-    max-height: 800px;
-    word-wrap: normal;
-    font-size: 100%;
+display: block;
+padding: 5px;
+overflow: auto;
+max-height: 800px;
+word-wrap: normal;
+font-size: 100%;
 }
 </style>
 
 ---
 
-# Setup docker for MacOS
+# Setup docker
+
+### for MacOS
 
 Follow this link: [https://docs.docker.com/docker-for-mac/install](https://docs.docker.com/docker-for-mac/install)
 
@@ -70,6 +71,7 @@ Docker is started automatically.
 
 <img src="./images/docker-macos.png">
 
+<prettier-ignore>
 ***
 
 ## File sharing
@@ -86,8 +88,10 @@ Add File Sharing (for MacOS)
 ---
 
 # Use docker to run services
+
 > Extend your development toolbox
 
+<prettier-ignore>
 ***
 
 ## Run mongoDB from docker
@@ -121,8 +125,10 @@ docker start mongodb
 ---
 
 # Dockerizing a Node.js app
+
 > You app in docker
 
+<prettier-ignore>
 ***
 
 ## A mini application
@@ -131,10 +137,12 @@ docker start mongodb
 const http = require('http');
 const fs = require('fs');
 
-http.createServer((req, res) => {
-  res.writeHead(200, {'Content-Type': 'text/html'});
-  res.end(`<h1>Hello from NodeJS</h1>`);
-}).listen(8080);
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html' });
+    res.end(`<h1>Hello from NodeJS</h1>`);
+  })
+  .listen(8080);
 ```
 
 ## Dockerizing Node.js
@@ -161,6 +169,7 @@ and run it
 docker run -p 8081:8080 -d node-app
 ```
 
+<prettier-ignore>
 ***
 
 ## Create NodeJS app with dependencies
@@ -192,6 +201,7 @@ A more real live application with Express
 }
 ```
 
+<prettier-ignore>
 ***
 
 ## Dockerize the NodeJS application
@@ -214,9 +224,9 @@ COPY . /app
 # Start app
 CMD [ "npm", "start" ]
 EXPOSE 8080
-
 ```
 
+<prettier-ignore>
 ***
 
 ## Dockerize the application
@@ -242,43 +252,36 @@ Only include files you really want with `.dockerignore`
 
 ---
 
-# Tips
-
-***
-
-## Limit memory
-
-By default, any Docker Container may consume as much of the hardware such as CPU and RAM. Better to limit usages.
-
-```bash
-$ docker run -p 8080:3000 -m "300M" --memory-swap "1G" demo
-```
-
-***
-
-## Environment Variables
-
-Run with `NODE_ENV` set to production.
-
-```bash
-$ docker run -p 8080:3000 -e "NODE_ENV=production" demo
-```
-
-This is the way you would pass in secrets and other runtime configurations to your application as well.
-
-***
-
-## Tag Docker Images When Building
-
-In order to properly manage and maintain a deterministic build and an audit trail of a container, it is critical to create a good tagging strategy.
-
-```bash
-$ docker  build -t appnamespace/app:0.0.1 .
-```
-
-***
-
 ## Minimize your image size
+
+> Make it small
+
+<prettier-ignore>
+***
+
+## Which base image?
+
+| name                   | Linux  | remark              | size  |
+| ---------------------- | ------ | ------------------- | ----- |
+| node                   | Debian | latest (inc tools)  | 673MB |
+| node:6                 | Debian | latest v6 (6.14.4)  | 659MB |
+| node:slim              | Debian | less tools          | 183MB |
+| node:8-slim            | Debian | less tools & v8     |       |
+| node:alpine            | Alpine | optimized for node  | 69 MB |
+| mhart/alpine-node      | Alpine | latest (npm & yarn) | 68 MB |
+| mhart/alpine-node:base | Alpine | latest              | 42 MB |
+
+```
+$ docker run mhart/alpine-node:10 node --version
+v10.11.0
+```
+
+See [https://hub.docker.com/r/mhart/alpine-node/](https://hub.docker.com/r/mhart/alpine-node/)
+
+<prettier-ignore>
+***
+
+## Multi-stage builds
 
 Using minimal node.js image, yarn and multi-stage builds
 
@@ -300,7 +303,38 @@ EXPOSE 8080
 CMD ["node", "src/server.js"]
 ```
 
-See [https://hub.docker.com/r/mhart/alpine-node/](https://hub.docker.com/r/mhart/alpine-node/)
+---
+
+## HEALTHCHECK
+
+> Monitor your docker image
+
+<prettier-ignore>
+***
+
+## HEALTHCHECK
+
+Docker provide a native health check (> 1.12)
+
+```
+# Dockerfile
+FROM node
+
+...
+
+# check every 30s to ensure this service returns HTTP 200
+HEALTHCHECK --interval=30s CMD node healthcheck.js
+
+# Start app
+CMD [ "npm", "start" ]
+```
+
+Status
+
+```
+CONTAINER ID  IMAGE    COMMAND      STATUS
+7f98cf0d23ae  health   "npm start"  Up 30 seconds (healthy)
+```
 
 ---
 
@@ -308,6 +342,7 @@ See [https://hub.docker.com/r/mhart/alpine-node/](https://hub.docker.com/r/mhart
 
 > We can speak about the graceful shutdown of our application, when all of the resources it used and all of the traffic and/or data processing what it handled are closed and released properly.
 
+<prettier-ignore>
 ***
 
 ## Long running request
@@ -321,9 +356,10 @@ app.get('/wait', (req, res) => {
   setTimeout(() => {
     res.send({
       id: Date.now(),
-      message: 'Hello belated world'});
-  }, timeout * 1000)
-})
+      message: 'Hello belated world',
+    });
+  }, timeout * 1000);
+});
 ```
 
 If you stop the nodeJS server (ctrl-C or kill) before the request is finished.
@@ -333,6 +369,7 @@ $ curl http://localhost:8080/wait
 curl: (52) Empty reply from server
 ```
 
+<prettier-ignore>
 ***
 
 ## Gracefull Shutdown
@@ -340,15 +377,15 @@ curl: (52) Empty reply from server
 React to sigint & sigterm to handle shutdown of the server
 
 ```js
-const shutdown = (signal) => {
-  console.log("shutdown by", signal);
-  httpServer.close((err) => {
+const shutdown = signal => {
+  console.log('shutdown by', signal);
+  httpServer.close(err => {
     console.log(`  server stopped by ${signal}`);
     process.exit(err ? 1 : 0);
   });
 };
 
-process.on('SIGINT', () => shutdown('SIGINT'));   // ctrl-c
+process.on('SIGINT', () => shutdown('SIGINT')); // ctrl-c
 process.on('SIGTERM', () => shutdown('SIGTERM')); // kill
 ```
 
@@ -356,41 +393,46 @@ Limit Keep Alive
 
 ```js
 const httpServer = app.listen(8080, () => {
-    // limit keep alive to 6sec
-    httpServer.timeout = 6000;
-})
+  // limit keep alive to 6sec
+  httpServer.timeout = 6000;
+});
 ```
 
-For production: https://www.npmjs.com/package/@moebius/http-graceful-shutdown
-
+<prettier-ignore>
 ***
-
 
 ## Run in docker
 
 Build and run
 
 ```bash
-docker build -q -t grace . && docker run -p 1234:8080 --rm --name=grace grace
+docker build -t node-express-shutdown .
+docker run -p 8080:80 --rm --name=expressShutdown node-express-shutdown
 ```
 
 Stop container
 
 ```bash
-docker stop grace
+docker stop expressShutdown
 ```
 
 ---> BAD: We don't see any signal handling <---
 
+<prettier-ignore>
+***
+
+## Signal processing in docker
+
 Lets look at the process tree.
 
 ```
-$ docker exec -it grace /bin/sh
+$ docker exec -it expressShutdown /bin/sh
 > ps falx
 ```
 
 <img src="./images/process-tree.png" width="1000px"/>
 
+<prettier-ignore>
 ***
 
 ## Gracefull Docker Shutdown
@@ -401,20 +443,19 @@ To shutdown gracefully
 # Don't start with npm
 # Always start node process directly
 CMD [ "node", "src/server.js" ]
-EXPOSE 8080
 ```
 
 Stop with timeout
 
 ```bash
 # stop container with 30 timeout before sending KILL
-docker stop grace --time 30
+docker stop expressShutdown --time 30
 ```
 
 Build, run & shutdown
 
 ```bash
-$ docker build -q -t grace . && docker run -p 1234:8080 --rm --name=grace grace
+$ docker run -p 8080:80 --rm --name=expressShutdown node-express-shutdown
 Shutdown by SIGTERM
   server stopped.
 ```
@@ -425,13 +466,16 @@ Shutdown by SIGTERM
 
 > Set up high availability
 
+<prettier-ignore>
 ***
 
 # Clustering with PM2
+
 > High available application
 
 <img src="https://go.gliffy.com/go/share/image/s6a82dwxoaxlkesqscp2.png?utm_medium=live-embed&utm_source=trello">
 
+<prettier-ignore>
 ***
 
 ## Setup, Config and Run PM2
@@ -470,6 +514,7 @@ pm2 status
 pm2 logs
 ```
 
+<prettier-ignore>
 ***
 
 ## Running PM2 in docker
@@ -495,6 +540,7 @@ CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]
 EXPOSE 8080
 ```
 
+<prettier-ignore>
 ***
 
 ## Usefull PM2 commands
@@ -509,15 +555,17 @@ $ docker exec -it <container-id> pm2 list
 $ docker exec -it <container-id> pm2 monit
 ```
 
-***
+---
 
 ## Load Balancing with NGINX
+
 ### Multiple docker images
 
 Let's configure an instance of NGINX to load balance requests between different docker instances.
 
 <img src="https://go.gliffy.com/go/share/image/s76fla75pcq21jlur1s7.png?utm_medium=live-embed&utm_source=trello">
 
+<prettier-ignore>
 ***
 
 ## Docker-compose
@@ -552,6 +600,7 @@ services:
     - ./.mongo-data:/data/db
 ```
 
+<prettier-ignore>
 ***
 
 ## NGINX
@@ -575,6 +624,7 @@ upstream node-app {
 }
 ```
 
+<prettier-ignore>
 ***
 
 ## Dockerize NGINX
@@ -587,6 +637,7 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 ```
 
+<prettier-ignore>
 ***
 
 ## Compose: build and run
@@ -601,9 +652,117 @@ $ docker-compose up
 
 ---
 
+# Deploy
+
+> Where to put those docker images
+
+<prettier-ignore>
+***
+
+## Simple Use & Deployment
+
+- Local services (eg; mongoDB)
+
+- CircleCI: build & test image
+
+- Zeit Now: with Docker Support
+
+- Azure Container Instances
+
+- Heroku Docker
+
+- AWS Fargate
+
+<prettier-ignore>
+***
+
+## Now
+
+```bash
+# build and run container
+now
+```
+
+> DEMO: .../demos/nextjs-with-now
+
+<prettier-ignore>
+***
+
+## Azure Container Instances
+
+```bash
+# Create resource group
+az group create --name timACI --location northeurope
+
+# Create container
+az container create --name simpleservice \
+    --image magneticio/simpleservice:1.0.0 \
+    --resource-group timACI --ip-address public --port 3000
+
+# Start container
+az container show --name simpleservice --resource-group timACI
+
+# Delete container
+az container delete --name simpleservice --resource-group timACI
+```
+
+<prettier-ignore>
+***
+
+## Scale, High available and orchestrate containers
+
+- Azure Container Service
+
+- AWS Elastic Container Service (ECS)
+
+- Google Container Engine
+
+---
+
+# Tips
+
+<prettier-ignore>
+***
+
+## Limit memory
+
+By default, any Docker Container may consume as much of the hardware such as CPU and RAM. Better to limit usages.
+
+```bash
+$ docker run -p 8080:80 -m "300M" --memory-swap "1G" demo
+```
+
+<prettier-ignore>
+***
+
+## Environment Variables
+
+Run with `NODE_ENV` set to production.
+
+```bash
+$ docker run -p 8080:80 -e "NODE_ENV=production" demo
+```
+
+This is the way you would pass in secrets and other runtime configurations to your application as well.
+
+<prettier-ignore>
+***
+
+## Tag Docker Images When Building
+
+In order to properly manage and maintain a deterministic build and an audit trail of a container, it is critical to create a good tagging strategy.
+
+```bash
+$ docker  build -t appnamespace/app:1.1.0 .
+```
+
+---
+
 # Appendix
+
 > Good to know
 
+<prettier-ignore>
 ***
 
 ## Best practices for writing Dockerfiles
@@ -618,6 +777,7 @@ $ docker-compose up
 
 - Minimize the number of layers
 
+<prettier-ignore>
 ***
 
 ## Usefull Docker Commands
@@ -625,16 +785,20 @@ $ docker-compose up
 ```bash
 # Docker build
 docker build -t node-app .
+```
+
+```bash
+# List all images
+docker images
 
 # List all running containers
 docker ps
 
-# List all running docker containers
-docker ps
+# List all containers
+docker ps -a
+```
 
-# Remove all dangling images, temp/cached containers
-docker system prune
-
+```bash
 # Stop all containers
 docker stop $(docker ps -a -q)
 
@@ -644,16 +808,33 @@ docker rm $(docker ps -a -q)
 # Remove/delete all images
 docker rmi -f $(docker images -q)
 
-# Stop (and after 10sec kill) a docker container
-docker kill <container-id>
+# Stop (and after 10sec kill) a running container
+docker stop <container-id or name>
+docker stop -f <container-id  or name>
+```
 
+<prettier-ignore>
+***
+
+## Usefull Docker Commands
+
+```bash
 # Run interactive
-docker run -p 8082:8080 -d <image-name> -i -t /bin/bash
+docker run -it <image-name>
+
+# Run interactive with
+docker run -it --entrypoint bash <image-name>
 
 # Run interactive on running container
 docker exec -it <container-id> /bin/bash
 ```
 
+```bash
+# Stop and remove all stuff (containers, images, cache, ...)
+docker system prune
+```
+
+<prettier-ignore>
 ***
 
 # Resources
@@ -664,11 +845,11 @@ docker exec -it <container-id> /bin/bash
 
 - [Load Balancing Node.js Applications with NGINX and Docker](https://auth0.com/blog/load-balancing-nodejs-applications-with-nginx-and-docker/)
 
-- [Best practices for writing Dockerfiles](
-https://docs.docker.com/v17.09/engine/userguide/eng-image/dockerfile_best-practices)
+- [Best practices for writing Dockerfiles](https://docs.docker.com/v17.09/engine/userguide/eng-image/dockerfile_best-practices)
 
 - [Using PM2 with Docker](https://pm2.io/doc/en/runtime/integration/docker/?utm_source=pm2&utm_medium=website&utm_campaign=rebranding)
 
+<prettier-ignore>
 ***
 
 # Resources
@@ -681,6 +862,4 @@ https://docs.docker.com/v17.09/engine/userguide/eng-image/dockerfile_best-practi
 
 - [https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86](https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86)
 
-
-
-
+- [Docker for local development](https://github.com/BretFisher/node-docker-good-defaults)

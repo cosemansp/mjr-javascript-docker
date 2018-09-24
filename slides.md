@@ -654,18 +654,66 @@ $ docker-compose up
 
 # Deploy
 
-> Where to put those docker images
+<img src="./images/docker-pipeline.png" width="1200px">
 
 <prettier-ignore>
 ***
 
-## Simple Use & Deployment
+## Push image to registry
 
-- Local services (eg; mongoDB)
+```bash
+# login to dockerhub: https://hub.docker.com/
+docker login
+
+# tag (label) image
+docker tag my_image euricom/my_image
+
+# push to repository
+docker push euricom/my_image
+```
+
+<prettier-ignore>
+***
+
+## CI & CD
 
 - CircleCI: build & test image
 
-- Zeit Now: with Docker Support
+- Azure DevOps (VSTS)
+
+- GitLab Continuous Integration
+
+<prettier-ignore>
+***
+
+## CircleCI
+
+| Base Image | Service Image | Tools   |
+| ---------- | ------------- | ------- |
+| Node       | MongoDB       | curl    |
+| JRuby      | MySQL         | git     |
+| Go         | PostgresSQL   | zip/tar |
+| PHP        | ...           | docker  |
+| ...        | ...           | jq      |
+| Custom     | Custom        | apt-get |
+
+build config
+
+```
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/node:10
+      - image: mongo:3.4.4
+```
+
+<prettier-ignore>
+***
+
+## Simple Deployment
+
+- Now (Zeit)
 
 - Azure Container Instances
 

@@ -103,6 +103,7 @@ Create container & run
 docker run --publish 27017:27017 \
     --name mongodb \
     --volume /data/docker/mongo-3.6:/bitnami \
+    --rm \
     bitnami/mongodb:3.6
 ```
 
@@ -166,7 +167,8 @@ docker build -t node-app .
 and run it
 
 ```bash
-docker run -p 8081:8080 -d node-app
+docker run -p 8081:8080 -d node-app # deamon
+docker run -p 8081:8080 -it node-app # interactive
 ```
 
 <prettier-ignore>
@@ -287,7 +289,7 @@ Using minimal node.js image, yarn and multi-stage builds
 
 ```docker
 # Do the npm install or yarn install in the full image
-FROM mhart/alpine-node:8
+FROM mhart/alpine-node:8 as builder
 WORKDIR /app
 COPY package.json yarn.lock ./
 RUN yarn install --production
@@ -296,7 +298,7 @@ RUN yarn install --production
 # the smaller base image
 FROM mhart/alpine-node:base-8
 WORKDIR /app
-COPY --from=0 /app .
+COPY --from=builder /app .
 COPY ./src /app/src
 
 EXPOSE 8080
@@ -318,7 +320,7 @@ Docker provide a native health check (> 1.12)
 
 ```
 # Dockerfile
-FROM node
+FROM mhart/alpine-node
 
 ...
 
@@ -490,7 +492,7 @@ npm install pm2 -g
 Config
 
 ```js
-# pm2.config.js
+# ecosystem.config.js
 module.exports = {
   apps : [{
     name      : 'API',
@@ -507,7 +509,7 @@ Startup & monitor
 
 ```bash
 # Start PM2 demon
-pm2 start pm2.config.js
+pm2 start
 
 # Other commands
 pm2 status
@@ -568,41 +570,6 @@ Let's configure an instance of NGINX to load balance requests between different 
 <prettier-ignore>
 ***
 
-## Docker-compose
-
-Compose is a tool for defining and running multi-container Docker applications.
-
-```docker
-version: '2'
-services:
-  nginx:
-    build: ./nginx
-    ports:
-    - "8080:80"
-    depends_on:
-    - node1
-    - node2
-  node1:
-    build: .
-    depends_on:
-    - mongo
-    environment:
-      MONGO_URL: mongodb://mongo/todoDemo
-  node2:
-    build: .
-    depends_on:
-    - mongo
-    environment:
-      MONGO_URL: mongodb://mongo/todoDemo
-  mongo:
-    image: mongo:3.2
-    volumes:
-    - ./.mongo-data:/data/db
-```
-
-<prettier-ignore>
-***
-
 ## NGINX
 
 [Nginx](https://www.nginx.com/) is a high performance load balancer.
@@ -640,6 +607,41 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 <prettier-ignore>
 ***
 
+## Docker-compose
+
+Compose is a tool for defining and running multi-container Docker applications.
+
+```docker
+version: '2'
+services:
+  nginx:
+    build: ./nginx
+    ports:
+    - "8080:80"
+    depends_on:
+    - node1
+    - node2
+  node1:
+    build: .
+    depends_on:
+    - mongo
+    environment:
+      MONGO_URL: mongodb://mongo/todoDemo
+  node2:
+    build: .
+    depends_on:
+    - mongo
+    environment:
+      MONGO_URL: mongodb://mongo/todoDemo
+  mongo:
+    image: mongo:3.2
+    volumes:
+    - ./.mongo-data:/data/db
+```
+
+<prettier-ignore>
+***
+
 ## Compose: build and run
 
 ```bash
@@ -666,17 +668,57 @@ $ docker-compose up
 docker login
 
 # tag (label) image
-docker tag my_image euri/my_image:1.0.0
-docker build -t euri/my_image:1.0.0
+docker tag my-image euri/my-image:1.0.0 .
+docker build -t euri/my-image:1.0.0 .
 
 # push to repository
-docker push euri/my_image:1.0.0
+docker push euri/my-image:1.0.0
 ```
 
 <prettier-ignore>
 ***
 
-## CI & CD
+## Simple Deployment
+
+- Azure Container Instances
+
+- Heroku Docker
+
+- AWS Fargate
+
+- Other (Sloppy.io, Hyper.sh, ...)
+
+- Or custom ([scaleway.com](https://www.scaleway.com/imagehub/docker/), ...)
+
+<prettier-ignore>
+***
+
+## Azure Container Instances
+
+```bash
+# Create resource group
+az group create --name timACI --location northeurope
+```
+
+```bash
+# Create container
+az container create --name euritest \
+    --image euri/my-image:1.0.0 \
+    --resource-group timACI --ip-address public --port 3000
+
+# Start container
+az container show --name euritest --resource-group timACI
+```
+
+```bash
+# Delete container
+az container delete --name euritest --resource-group timACI
+```
+
+<prettier-ignore>
+***
+
+## Continuous Integration
 
 - CircleCI: build & test image
 
@@ -707,42 +749,6 @@ jobs:
     docker:
       - image: circleci/node:10
       - image: mongo:3.4.4
-```
-
-<prettier-ignore>
-***
-
-## Simple Deployment
-
-- Azure Container Instances
-
-- Heroku Docker
-
-- AWS Fargate
-
-- Other (Sloppy.io, Hyper.sh, ...)
-
-- Or custom ([scaleway.com](https://www.scaleway.com/imagehub/docker/), ...)
-
-<prettier-ignore>
-***
-
-## Azure Container Instances
-
-```bash
-# Create resource group
-az group create --name timACI --location northeurope
-
-# Create container
-az container create --name euritest \
-    --image euri/test:1.0.0 \
-    --resource-group timACI --ip-address public --port 3000
-
-# Start container
-az container show --name euritest --resource-group timACI
-
-# Delete container
-az container delete --name euritest --resource-group timACI
 ```
 
 <prettier-ignore>
@@ -783,12 +789,6 @@ az container delete --name euritest --resource-group timACI
 - Static Website
 
 - Simple NodeJS App
-
-<hr>
-
-#### See Also:
-
-### App Engines & Serverless
 
 ---
 

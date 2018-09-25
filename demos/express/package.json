@@ -7,9 +7,8 @@
     "start:debug": "nodemon ./src/server.js",
     "lint": "eslint \"**/*.js\"",
     "docker:build": "docker build -t node-express .",
-    "docker:run": "docker run -p 8081:8080 -d node-express"
+    "docker:run": "docker run -p 8081:8080 --rm -d node-express"
   },
-  "author": "",
   "license": "MIT",
   "dependencies": {
     "express": "^4.16.3"

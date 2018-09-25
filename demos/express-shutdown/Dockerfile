@@ -27,4 +27,3 @@ COPY . /app
 
 # Start app
 CMD [ "npm", "start" ]
-# CMD [ "node", "src/server.js" ]

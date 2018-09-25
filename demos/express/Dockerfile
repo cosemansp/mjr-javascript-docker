@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node
+FROM mhart/alpine-node:base
 
 # Create app directory
 WORKDIR /app

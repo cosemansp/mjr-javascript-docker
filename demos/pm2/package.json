@@ -6,8 +6,8 @@
     "start": "node ./src/server.js",
     "start:debug": "nodemon ./src/server.js",
     "lint": "eslint \"**/*.js\"",
-    "docker:build": "docker build -t node-express .",
-    "docker:run": "docker run -p 1234:8080 -d node-express"
+    "docker:build": "docker build -t node-pm2 .",
+    "docker:run": "docker run -p 1234:8080 --rm -d node-pm2"
   },
   "author": "",
   "license": "MIT",

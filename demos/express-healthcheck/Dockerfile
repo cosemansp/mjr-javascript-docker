@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node
+FROM mhart/alpine-node
 
 # set our node environment, either development or production
 # defaults to production
@@ -26,4 +26,5 @@ HEALTHCHECK --interval=30s CMD node healthcheck.js
 COPY . /app
 
 # Start app
-CMD [ "npm", "start" ]
+# CMD [ "npm", "start" ]
+CMD [ "node", "./src/server.js" ]

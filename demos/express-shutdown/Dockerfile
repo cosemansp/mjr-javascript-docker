@@ -1,5 +1,5 @@
 # Dockerfile
-FROM node
+FROM mhart/alpine-node
 
 # set our node environment, either development or production
 # defaults to production

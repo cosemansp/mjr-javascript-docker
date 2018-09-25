@@ -666,10 +666,11 @@ $ docker-compose up
 docker login
 
 # tag (label) image
-docker tag my_image euricom/my_image
+docker tag my_image euri/my_image:1.0.0
+docker build -t euri/my_image:1.0.0
 
 # push to repository
-docker push euricom/my_image
+docker push euri/my_image:1.0.0
 ```
 
 <prettier-ignore>
@@ -713,25 +714,15 @@ jobs:
 
 ## Simple Deployment
 
-- Now (Zeit)
-
 - Azure Container Instances
 
 - Heroku Docker
 
 - AWS Fargate
 
-<prettier-ignore>
-***
+- Other (Sloppy.io, Hyper.sh, ...)
 
-## Now
-
-```bash
-# build and run container
-now
-```
-
-> DEMO: .../demos/nextjs-with-now
+- Or custom ([scaleway.com](https://www.scaleway.com/imagehub/docker/), ...)
 
 <prettier-ignore>
 ***
@@ -743,15 +734,15 @@ now
 az group create --name timACI --location northeurope
 
 # Create container
-az container create --name simpleservice \
-    --image magneticio/simpleservice:1.0.0 \
+az container create --name euritest \
+    --image euri/test:1.0.0 \
     --resource-group timACI --ip-address public --port 3000
 
 # Start container
-az container show --name simpleservice --resource-group timACI
+az container show --name euritest --resource-group timACI
 
 # Delete container
-az container delete --name simpleservice --resource-group timACI
+az container delete --name euritest --resource-group timACI
 ```
 
 <prettier-ignore>
@@ -767,42 +758,37 @@ az container delete --name simpleservice --resource-group timACI
 
 ---
 
-# Tips
+# Cool, great I want a container
+
+<img src="./images/use-docker.jpeg" width="500px">
+
+> Are you sure?
 
 <prettier-ignore>
 ***
 
-## Limit memory
+# Yes
 
-By default, any Docker Container may consume as much of the hardware such as CPU and RAM. Better to limit usages.
+- Development support (local, build systems)
 
-```bash
-$ docker run -p 8080:80 -m "300M" --memory-swap "1G" demo
-```
+- Existing container orchestration
 
-<prettier-ignore>
-***
-
-## Environment Variables
-
-Run with `NODE_ENV` set to production.
-
-```bash
-$ docker run -p 8080:80 -e "NODE_ENV=production" demo
-```
-
-This is the way you would pass in secrets and other runtime configurations to your application as well.
+- Need for special toolset
 
 <prettier-ignore>
 ***
 
-## Tag Docker Images When Building
+# No
 
-In order to properly manage and maintain a deterministic build and an audit trail of a container, it is critical to create a good tagging strategy.
+- Static Website
 
-```bash
-$ docker  build -t appnamespace/app:1.1.0 .
-```
+- Simple NodeJS App
+
+<hr>
+
+#### See Also:
+
+### App Engines & Serverless
 
 ---
 
@@ -833,6 +819,7 @@ $ docker  build -t appnamespace/app:1.1.0 .
 ```bash
 # Docker build
 docker build -t node-app .
+docker build -t namespace/app:1.1.0 .
 ```
 
 ```bash
@@ -844,6 +831,13 @@ docker ps
 
 # List all containers
 docker ps -a
+```
+
+```bash
+# Run
+docker run -p 8080:80 <image>
+docker run -p 8080:80 --name myCoolApp <image>
+docker run -p 8080:80 --env "NODE_ENV=production" <image>
 ```
 
 ```bash
@@ -870,7 +864,7 @@ docker stop -f <container-id  or name>
 # Run interactive
 docker run -it <image-name>
 
-# Run interactive with
+# Run interactive with shell
 docker run -it --entrypoint bash <image-name>
 
 # Run interactive on running container
@@ -878,8 +872,17 @@ docker exec -it <container-id> /bin/bash
 ```
 
 ```bash
+# Login
+docker login
+
+# Push to docker hub
+docker push <namespace>/<image-name>:<tag>
+docker push euri/myCoolApp:1.0.0
+```
+
+```bash
 # Stop and remove all stuff (containers, images, cache, ...)
-docker system prune
+docker system prune --all
 ```
 
 <prettier-ignore>
@@ -911,3 +914,9 @@ docker system prune
 - [https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86](https://medium.com/@gchudnov/trapping-signals-in-docker-containers-7a57fdda7d86)
 
 - [Docker for local development](https://github.com/BretFisher/node-docker-good-defaults)
+
+---
+
+# Thank You 👋
+
+### [https://bit.ly/2xxPAPO](https://bit.ly/2xxPAPO)
